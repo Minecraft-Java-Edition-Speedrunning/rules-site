@@ -20,7 +20,7 @@
           return res.json();
         })
         .then(data => {
-          data.filter(it => !it.name.includes("beta")).sort(it => it.name.split(".")[0].split("_").at(-1))
+          data.filter(it => !it.name.includes("beta")).sort(it => it.name.split(".")[0].split("_").at(-1).substring(1))
           pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
           link.href = link.innerHTML = window.location.href = pdf_url
         })
@@ -32,5 +32,6 @@
   <p>redirecting to: <span id="js">this site requires javascript.</span> <a id="githack_link"
       href="https://github.com/Minecraft-Java-Edition-Speedrunning/rules"> click here for the rules repo</a>.</p>
 </body>
+
 
 </html>

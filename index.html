@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCSR Rules</title>
+    <script>
+function docLoad() {
+jsElement = document.getElementById("js")
+jsElement.innerHTML = ""
+link = document.getElementById("githack_link")
+link.innerHTML = "loading"
+fetch("https://api.github.com/repos/Minecraft-Java-Edition-Speedrunning/rules/contents/pub/pdf")
+.then(res => {
+    if (!res.ok) {
+	jsElement.innerHTML = "GitHub API Failed!"
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return res.json();
+  })
+ .then(data => {
+data.filter(it => !it.name.includes("beta")).sort(it => it.name.split(".")[0].split("_").at(-1))
+pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
+link.href = link.innerHTML = window.location.href = pdf_url
+})
+}
+</script>
+</head>
+<body onload="docLoad()">
+<p>redirecting to: <span id="js">this site requires javascript.</span> <a id="githack_link" href="https://github.com/Minecraft-Java-Edition-Speedrunning/rules"> click here for the rules repo</a>.</p>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>MCSR Rules Redirect</title <meta name="description" content="The latest PDF release of the Minecraft Speedrunning ruleset.">
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("js").remove()
+      fetch("https://api.github.com/repos/Minecraft-Java-Edition-Speedrunning/rules/contents/pub/pdf")
+        .then(res => {
+          if (!res.ok) {
+            document.getElementById("js").innerText = "github api failed :("
+            throw new Error("http error status: " + response.status);
+          }
+          return res.json();
+        })
+        .then(data => {
+          pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
+          link = document.getElementById("githack")
+          link.href = link.innerHTML = pdf_url
+          window.location.replace(pdf_url)
+        })
+    })
+  </script>
+</head>
+
+<body>
+  <h2 id="js">This site requires JavaScript!</h2>
+  <p>Redirecting to: <a id="githack">loading</a></p>
+</body>
+
+</html>

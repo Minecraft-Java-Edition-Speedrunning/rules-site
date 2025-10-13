@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>MCSR Rules</title
-  <meta name="description" content="The official ruleset for Minecraft Speedrunning.">
+  <title>MCSR Rules</title <meta name="description" content="The official ruleset for Minecraft Speedrunning.">
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      jsElement = document.getElementById("js")
-      jsElement.innerHTML = ""
-      link = document.getElementById("githack_link")
-      link.innerHTML = "loading"
+      document.getElementById("js").remove()
       fetch("https://api.github.com/repos/Minecraft-Java-Edition-Speedrunning/rules/contents/pub/pdf")
         .then(res => {
           if (!res.ok) {
-            jsElement.innerHTML = "github api failed :("
+            document.getElementById("newest").innerText = "github api failed :("
             throw new Error("http error status: " + response.status);
           }
           return res.json();
         })
         .then(data => {
-          data.filter(it => !it.name.includes("beta")).map(it => it.name.split(".")[0].split("_")[1].substring(1)).sort((a, b) => a - b)
-          pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
-          link.href = link.innerHTML = pdf_url
-          window.location.replace(pdf_url)
+          data.reverse()
+          quicklink = document.getElementById("quicklink")
+          newest = data[0]
+          quicklink.href = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + newest.name
+          quicklink.innerText = newest.name
+          for (ver of data) {
+            url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + ver.name
+            changelog = "https://github.com/Minecraft-Java-Edition-Speedrunning/rules/releases/tag/" + ver.name.split(".")[0]
+            releases.appendChild(document.createElement("li")).innerHTML = `<a href=${url}>${ver.name}</a>`
+              + (!ver.name.includes("beta") ? `, <a href="${changelog}">changelog</a>` : "")
+          }
         })
     })
   </script>
 </head>
+
 <body>
-  <p>redirecting to: <span id="js">this site requires javascript.</span> <a id="githack_link"
-      href="https://github.com/Minecraft-Java-Edition-Speedrunning/rules"> click here for the rules repo</a>.</p>
+  <h1>MCSR Rules</h1>
+  <h2 id="js">This site requires JavaScript!</h2>
+  <h2 id="newest">current: <a id="quicklink" target="_blank">loading</a></h2>
+  <h3 id="rules">all past releases:</h3>
+  <ul id="releases"></ul>
+  <p>The rules are maintained on GitHub at <a
+      href="https://github.com/Minecraft-Java-Edition-Speedrunning/rules">Minecraft-Java-Edition-Speedrunning/rules</a>.
+  </p>
+  <p>Redirect to newest released pdf: <a href="./latest">/latest</a></p>
 </body>
+
 </html>

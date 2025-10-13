@@ -18,7 +18,7 @@
         .then(data => {
           pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
           link = document.getElementById("githack")
-          link.href = link.innerHTML = pdf_url
+          link.href = link.innerText = pdf_url
           window.location.replace(pdf_url)
         })
     })
@@ -31,3 +31,4 @@
 </body>
 
 </html>
+

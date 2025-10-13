@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,23 +14,20 @@
         .then(res => {
           if (!res.ok) {
             jsElement.innerHTML = "github api failed :("
-            throw new Error("http error :( status: " + response.status);
+            throw new Error("http error status: " + response.status);
           }
           return res.json();
         })
         .then(data => {
-          data.filter(it => !it.name.includes("beta")).sort(it => it.name.split(".")[0].split("_").at(-1).substring(1))
+          data.filter(it => !it.name.includes("beta")).map(it => it.name.split(".")[0].split("_")[1].substring(1)).sort((a, b) => a - b)
           pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
           link.href = link.innerHTML = window.location.href = pdf_url
         })
     }
   </script>
 </head>
-
 <body onload="docLoad()">
   <p>redirecting to: <span id="js">this site requires javascript.</span> <a id="githack_link"
       href="https://github.com/Minecraft-Java-Edition-Speedrunning/rules"> click here for the rules repo</a>.</p>
 </body>
-
-
 </html>

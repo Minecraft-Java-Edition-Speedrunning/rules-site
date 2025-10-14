@@ -17,6 +17,7 @@
         })
         .then(data => {
           data.sort((a, b) => {
+            a = a.name; b = b.name;
             b1 = !a.includes("beta"); b2 = !b.includes("beta")
             if (b1 ^ b2) return b2 - b1 // boolean subtraction
             return b.split("_").at(-1).substring(1) - a.split("_").at(-1).substring(1) // string subtraction
@@ -36,5 +37,6 @@
 </body>
 
 </html>
+
 
 

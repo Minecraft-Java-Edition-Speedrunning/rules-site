@@ -20,7 +20,7 @@
             a = a.name; b = b.name;
             b1 = !a.includes("beta"); b2 = !b.includes("beta")
             if (b1 ^ b2) return b2 - b1 // boolean subtraction
-            return b.split("_").at(-1).substring(1) - a.split("_").at(-1).substring(1) // string subtraction
+            return b.split(".")[0].split("_").at(-1).substring(1) - a.split(".")[0].split("_").at(-1).substring(1) // string subtraction
           })
           pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
           link = document.getElementById("githack")
@@ -37,6 +37,3 @@
 </body>
 
 </html>
-
-
-

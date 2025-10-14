@@ -16,7 +16,11 @@
           return res.json();
         })
         .then(data => {
-          data.reverse()
+          data.sort((a, b) => {
+            b1 = !a.includes("beta"); b2 = !b.includes("beta")
+            if (b1 ^ b2) return b2 - b1 // boolean subtraction
+            return b.split("_").at(-1).substring(1) - a.split("_").at(-1).substring(1) // string subtraction
+          })
           quicklink = document.getElementById("quicklink")
           newest = data[0]
           quicklink.href = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + newest.name
@@ -44,4 +48,5 @@
 </body>
 
 </html>
+
 

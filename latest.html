@@ -22,7 +22,7 @@
             if (b1 ^ b2) return b2 - b1 // boolean subtraction
             return b.split(".")[0].split("_").at(-1).substring(1) - a.split(".")[0].split("_").at(-1).substring(1) // string subtraction
           })
-          pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data.at(-1).name
+          pdf_url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + data[0].name
           link = document.getElementById("githack")
           link.href = link.innerText = pdf_url
           window.location.replace(pdf_url)

@@ -8,81 +8,59 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png"> <!-- website icon -->
   <script>
- 	document.addEventListener('DOMContentLoaded', () => {
-    const jsWarn = document.getElementById('js');
-    if (jsWarn) jsWarn.remove();
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("js").remove()
+      fetch("https://api.github.com/repos/Minecraft-Java-Edition-Speedrunning/rules/contents/pub/pdf")
+        .then(res => {
+          if (!res.ok) {
+            document.getElementById("newest").innerText = "github api failed :("
+            throw new Error("http error status: " + response.status);
+          }
+          return res.json();
+        })
+        .then(data => {
+          data.sort((a, b) => {
+            a = a.name; b = b.name;
+            b1 = !a.includes("beta"); b2 = !b.includes("beta")
+            if (b1 ^ b2) return b2 - b1 // boolean subtraction
+            return b.split(".")[0].split("_").at(-1).substring(1) - a.split(".")[0].split("_").at(-1).substring(1) // string subtraction
+          })
+          quicklink = document.getElementById("quicklink")
+          newest = data[0]
+          quicklink.href = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + newest.name
+          quicklink.innerText = newest.name
 
-    const releasesEl = document.getElementById('releases');
-    const quicklink = document.getElementById('quicklink');
-    const newestEl = document.getElementById('newest');
+          // opens the link in a new tab 
+          quicklink.setAttribute("target", "_blank");
+          quicklink.setAttribute("rel", "noopener noreferrer");
+          
+          // clear the placeholder "Loading releases.."
+          if (releases) releases.innerHTML = '';
 
+          for (ver of data) {
+            url = "https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/" + ver.name
+            changelog = "https://github.com/Minecraft-Java-Edition-Speedrunning/rules/releases/tag/" + ver.name.split(".")[0]
 
-    fetch('https://api.github.com/repos/Minecraft-Java-Edition-Speedrunning/rules/contents/pub/pdf')
-      .then(res => {
-        if (!res.ok) {
-          if (newestEl) newestEl.innerText = 'github api failed :(';
-          throw new Error('GitHub API returned ' + res.status);
-        }
-        return res.json();
-      })
-      .then(data => {
-        data.sort((a, b) => {
-          const an = a.name, bn = b.name;
-          const aStable = !/beta/i.test(an);
-          const bStable = !/beta/i.test(bn);
-          if (aStable !== bStable) return aStable ? -1 : 1; 
+            // create a list item element
+            const li = document.createElement("li");
 
-          const aMatch = an.match(/([0-9]+(?:[._][0-9]+)*)/);
-          const bMatch = bn.match(/([0-9]+(?:[._][0-9]+)*)/);
-          if (aMatch && bMatch) {
-            const aNums = aMatch[1].replace(/_/g, '.').split('.').map(x => parseInt(x, 10) || 0);
-            const bNums = bMatch[1].replace(/_/g, '.').split('.').map(x => parseInt(x, 10) || 0);
-            const n = Math.max(aNums.length, bNums.length);
-            for (let i = 0; i < n; i++) {
-              const ai = aNums[i] || 0;
-              const bi = bNums[i] || 0;
-              if (ai !== bi) return bi - ai; 
+            if (!ver.name.includes("beta")) {
+              // release link and changelog link classes
+              li.innerHTML = `<a class="release-link" href="${url}" target="_blank" rel="noopener noreferrer">${ver.name}</a>`
+                + `<span class="sep"> — </span>`
+                + `<a class="changelog-link" href="${changelog}" target="_blank" rel="noopener noreferrer">Changelog</a>`;
+            } else {
+              // beta releases get .beta class styling
+              li.innerHTML = `<a class="release-link" href="${url}" target="_blank" rel="noopener noreferrer">${ver.name}</a>`
+                + `<span class="sep"> </span>`
+                + `<em class="beta">(beta)</em>`;
             }
+
+            releases.appendChild(li);
+
           }
-          return bn.localeCompare(an);
-        });
-
-        if (!data || data.length === 0) {
-          if (newestEl) newestEl.innerText = 'No releases found';
-          if (releasesEl) releasesEl.innerHTML = '<li class="loading">No releases found</li>';
-          return;
-        }
-
-        const newest = data[0];
-        const newestURL = 'https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/' + encodeURIComponent(newest.name);
-
-        if (quicklink) {
-          quicklink.href = newestURL;
-          quicklink.innerText = newest.name;
-        } else if (newestEl) {
-          newestEl.innerHTML = `Current: <a href="${newestURL}" target="_blank" rel="noopener noreferrer">${newest.name}</a>`;
-        }
-
-        if (releasesEl) releasesEl.innerHTML = '';
-        for (const ver of data) {
-          const li = document.createElement('li');
-          const url = 'https://rawcdn.githack.com/Minecraft-Java-Edition-Speedrunning/rules/main/pub/pdf/' + encodeURIComponent(ver.name);
-          const tag = ver.name.split('.')[0];
-          if (!/beta/i.test(ver.name)) {
-            const changelog = 'https://github.com/Minecraft-Java-Edition-Speedrunning/rules/releases/tag/' + encodeURIComponent(tag);
-            li.innerHTML = `<a class="release-link" href="${url}" target="_blank" rel="noopener noreferrer">${ver.name}</a><span class="sep"> — </span><a class="changelog-link" href="${changelog}" target="_blank" rel="noopener noreferrer">Changelog</a>`;
-          } else {
-            li.innerHTML = `<a class="release-link" href="${url}" target="_blank" rel="noopener noreferrer">${ver.name}</a><span class="sep"> </span><em class="beta">(beta)</em>`;
-          }
-          releasesEl.appendChild(li);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        if (newestEl) newestEl.innerText = 'Failed to load releases';
-        if (releasesEl) releasesEl.innerHTML = `<li>Failed to fetch releases: ${err.message}</li>`;
-      });
-  });
+        })
+    })
   </script>
 </head>
 
